@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from coverage import fitness
 import os
 import random

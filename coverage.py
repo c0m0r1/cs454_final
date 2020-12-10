@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import json
 import subprocess, os
 import re
@@ -14,9 +16,8 @@ def get_coverage_info(test):
         f.write("dirty = `{}`\n".format(re.escape(test)))
         f.writelines(runner_template)
 
-    result_dir = tempfile.TemporaryDirectory()
-        
-    result = subprocess.check_output(["c8", "-r", "text-lcov", "-o", result_dir.name, "node", "DOMpurify_src/runner.js"]).decode()
+    with tempfile.TemporaryDirectory() as result_dir:
+        result = subprocess.check_output(["c8", "-r", "text-lcov", "-o", result_dir, "node", "DOMpurify_src/runner.js"]).decode()
     
     is_purify = False
     coverage_list = []
@@ -40,8 +41,9 @@ def get_coverage_info(test):
         elif l[:3] == "LF:":
             total_line = int(l[3:])
         elif l[:3] == "LH:":
-            covered_lien = int(l[3:])
-    return (total_line, covered_lien, coverage_list)
+            covered_line = int(l[3:])
+
+    return (total_line, covered_line, coverage_list)
 
 if __name__ == "__main__":
     st = time.time()
