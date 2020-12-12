@@ -3,6 +3,7 @@
 import bs4
 
 
+# TODO : use .descendants generator?
 def get_elem_list(t):
     if not t.contents: return [t]
     root = t.contents[0]
