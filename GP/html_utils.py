@@ -17,4 +17,4 @@ def get_elem_list(t):
     return [t] + res_li
 
 def rand_str(minlen, maxlen):
-    return random.choices(string.printable, k=random.randint(minlen, maxlen))
+    return ''.join(random.choices(string.printable, k=random.randint(minlen, maxlen)))

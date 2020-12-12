@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
-from coverage import fitness
-import os
+from coverage import fitness, get_coverage_info
 import random
 import string
 
@@ -20,4 +19,6 @@ def primitive_random(iter_cnt):
     return (max_f, result)
     
 if __name__ == "__main__":
-    print(primitive_random(100))
+    result = primitive_random(100)
+    print(result)
+    print(get_coverage_info(result[1]))

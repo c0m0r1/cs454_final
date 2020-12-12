@@ -3,7 +3,7 @@
 import bs4
 import random
 import copy
-from html_utils import get_elem_list
+from .html_utils import get_elem_list
 
 
 def swap_random_elem(t1, t2):

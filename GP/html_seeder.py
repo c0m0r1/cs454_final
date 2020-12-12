@@ -12,11 +12,13 @@ def generate_html_tree(height, width, attr_cnt, str_minlen, str_maxlen, soup=Non
         root = soup.html
         width_min = 1  # force nonempty tree at root
     else:
-        # TODO : attribute values
-        # TODO : include strings, not only tags
-        root_attr = {k: rand_str(str_minlen, str_maxlen) for k in random.sample(ATTRS, random.randint(0, attr_cnt))}
-        root = soup.new_tag(random.choice(TAGS), attrs=root_attr)
-        width_min = 0
+        # string (leaf) node, probability same as other tags
+        if random.randint(0, len(TAGS)) == 0:
+            return bs4.NavigableString(rand_str(str_minlen, str_maxlen))
+        else:
+            root_attr = {k: rand_str(str_minlen, str_maxlen) for k in random.sample(ATTRS, random.randint(0, attr_cnt))}
+            root = soup.new_tag(random.choice(TAGS), attrs=root_attr)
+            width_min = 0
     
     if height > 0:
         for _ in range(random.randint(width_min, width)):

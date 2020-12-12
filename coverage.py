@@ -6,14 +6,16 @@ import re
 import tempfile
 import time
 
+MAX_TEST_LEN = 10000
+
 def fitness(test):
     total, covered, cov_li = get_coverage_info(test)
-    return covered/total
+    return (covered/total) - 0.1 * (len(str(test))/MAX_TEST_LEN)
 
 def get_coverage_info(test):
     runner_template = open("DOMpurify_src/runner_template.js",'r').readlines()
     with open("DOMpurify_src/runner.js", "w") as f:
-        f.write("dirty = `{}`\n".format(re.escape(test)))
+        f.write("dirty = `{}`\n".format(re.escape(str(test))))
         f.writelines(runner_template)
 
     with tempfile.TemporaryDirectory() as result_dir:

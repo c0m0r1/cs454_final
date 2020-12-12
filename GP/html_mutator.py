@@ -3,8 +3,8 @@
 import bs4
 import random
 import copy
-from html_constants import TAGS, ATTRS
-from html_utils import get_elem_list
+from .html_constants import TAGS, ATTRS
+from .html_utils import get_elem_list
 
 
 def delete_random_elem(t):
