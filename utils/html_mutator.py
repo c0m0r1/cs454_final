@@ -122,26 +122,16 @@ def inject_byte(t):
     # TODO : is there more various (and effective) byte injection method?
     # ex) do not re-interprete with bs and directly evaluate fitness
     t_str[random.randrange(len(t_str))] = chr(random.randrange(256))
-    return bs4.BeautifulSoup("".join(t_str), "lxml",multi_valued_attributes=None)
+    return bs4.BeautifulSoup("".join(t_str), "lxml", multi_valued_attributes=None)
 
 def mutate(t):
-    c = random.randrange(8)
-    if c == 0:
-        return delete_random_elem(t)
-    elif c == 1:
-        return add_random_elem(t)
-    elif c == 2:
-        return replace_random_elem(t)
-    elif c == 3:
-        return shuffle_random_elem(t)
-    elif c == 4:
-        return delete_random_attr(t)
-    elif c == 5:
-        return add_random_attr(t)
-    elif c == 6:
-        return replace_random_attr(t)
-    else:
-        return inject_byte(t)
+    mutators = [
+        delete_random_elem,  add_random_elem,
+        replace_random_elem, shuffle_random_elem,
+        delete_random_attr,  add_random_attr,
+        replace_random_attr, inject_byte
+    ]
+    return random.choice(mutators)(t)
         
 def swap_random_elem(t1, t2):
     elem_list1 = get_elem_list(t1)
@@ -173,8 +163,6 @@ def swap_random_attr(t1, t2):
 
     return (t1, t2)
 
-    return t
-
 def swap_subtree(t1, t2):
     elem_list1 = get_elem_list(t1)
     elem_list2 = get_elem_list(t2)
@@ -203,15 +191,11 @@ def swap_attr(t1, t2):
     return (t1, t2)
 
 def crossover(t1, t2):
-    c = random.randrange(4)
-    if c == 0:
-        return swap_random_elem(t)
-    elif c == 1:
-        return swap_random_attr(t)
-    elif c == 2:
-        return swap_subtree(t)
-    else:
-        return swap_attr(t)
+    operators = [
+        swap_random_elem,  swap_random_attr,
+        swap_subtree,      swap_attr
+    ]
+    return random.choice(operators)(t1, t2)
 
 if __name__=="__main__":
     test1 = """<html><head><title>The Dormouse's story</title></head>
@@ -248,9 +232,9 @@ if __name__=="__main__":
     </body></html>"""
 
     #didn't consider multi_valued_attributes
-    test1_soup = bs4.BeautifulSoup(test1, "lxml",multi_valued_attributes=None)
-    test2_soup = bs4.BeautifulSoup(test2, "lxml",multi_valued_attributes=None)
-    
+    test1_soup = bs4.BeautifulSoup(test1, "lxml", multi_valued_attributes=None)
+    test2_soup = bs4.BeautifulSoup(test2, "lxml", multi_valued_attributes=None)
+
     print(delete_random_elem(copy.copy(test1_soup)))
     print(add_random_elem(copy.copy(test1_soup)))
     print(replace_random_elem(copy.copy(test1_soup)))
