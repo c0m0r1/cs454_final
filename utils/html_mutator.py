@@ -28,13 +28,15 @@ def get_elem_list(t):
 def delete_random_elem(t):
     elem_list = get_elem_list(t)
     # avoid root deletion && empty-content tags
-    candidate_target = [c for c in elem_list if c.parent is not None and c.contents]
+    candidate_target = [c for c in elem_list if c.parent is not None]
     if not candidate_target : return t
     target = random.choice(candidate_target)
     
     candidate_target_child = [c for c in target.children if not isinstance(c, bs4.element.NavigableString)]
     if not candidate_target_child:
-        # no elem in child (maybe all string?)
+        if not target.contents:
+            target.extract()
+            return t
         # pick arbitrary child and discard left
         target_child = random.choice(target.contents)
         left_childs = []
