@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from utils.coverage import fitness
+from coverage import fitness
 import os
 import random
 import string

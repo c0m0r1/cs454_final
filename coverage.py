@@ -11,7 +11,7 @@ def fitness(test):
     return covered/total
 
 def get_coverage_info(test):
-    runner_template = open('DOMpurify_src/runner_template.js','r').readlines()
+    runner_template = open("DOMpurify_src/runner_template.js",'r').readlines()
     with open("DOMpurify_src/runner.js", "w") as f:
         f.write("dirty = `{}`\n".format(re.escape(test)))
         f.writelines(runner_template)
@@ -47,7 +47,7 @@ def get_coverage_info(test):
 
 if __name__ == "__main__":
     st = time.time()
-    total, covered, cov_li = get_coverage_info('<div></div>')
+    total, covered, cov_li = get_coverage_info("""<div></div>""")
     elapsed = time.time() - st
     print("{:f}%% covered".format(covered * 100/total))
     print(cov_li)
