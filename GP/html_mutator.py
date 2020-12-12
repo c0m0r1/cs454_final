@@ -3,27 +3,9 @@
 import bs4
 import random
 import copy
+from html_constants import TAGS, ATTRS
+from html_utils import get_elem_list
 
-# from https://stackoverflow.com/questions/2439374/where-to-find-a-list-of-all-the-possible-html-tags-in-python
-# we can use one in domato or DOMpurify instead
-# TODO : update if need more tags
-TAGS = ["a","abbr","acronym","address","area","b","base","bdo","big","blockquote","body","br","button","caption","cite","code","col","colgroup","dd","del","dfn","div","dl","DOCTYPE","dt","em","fieldset","form","h1","h2","h3","h4","h5","h6","head","html","hr","i","img","input","ins","kbd","label","legend","li","link","map","meta","noscript","object","ol","optgroup","option","p","param","pre","q","samp","script","select","small","span","strong","style","sub","sup","table","tbody","td","textarea","tfoot","th","thead","title","tr","tt","ul","var"]
-
-# but attrs are too tag-aware and type sensative...
-# maybe we should use grammer of domato for better result
-# for now i use some attrs from https://www.w3schools.com/tags/ref_standardattributes.asp
-# TODO : update if need more atrrs
-ATTRS = ["accesskey", "class", "contenteditable", "dir", "hidden", "draggable", "lang", "style", "title", "translate"]
-
-def get_elem_list(t):
-    if not t.contents: return [t]
-    root = t.contents[0]
-    res_li = []
-    for child in t.children:
-        if not isinstance(child, bs4.element.NavigableString): 
-            res_li += get_elem_list(child)
-    
-    return [t] + res_li
 
 def delete_random_elem(t):
     elem_list = get_elem_list(t)
@@ -132,70 +114,7 @@ def mutate(t):
         replace_random_attr, inject_byte
     ]
     return random.choice(mutators)(t)
-        
-def swap_random_elem(t1, t2):
-    elem_list1 = get_elem_list(t1)
-    elem_list2 = get_elem_list(t2)
-    # avoid root swap
-    target1 = random.choice([c for c in elem_list1 if c.parent is not None])
-    target2 = random.choice([c for c in elem_list2 if c.parent is not None])
 
-    target1.name, target2.name = target2.name, target1.name
-    target1.attrs, target2.attrs = target2.attrs, target1.attrs
-
-    return (t1, t2)
-    
-def swap_random_attr(t1, t2):
-    elem_list1 = get_elem_list(t1)
-    elem_list2 = get_elem_list(t2)
-
-    candidate_targets1 = [c for c in elem_list1 if c.attrs]
-    candidate_targets2 = [c for c in elem_list2 if c.attrs]
-    if not candidate_targets1 or not candidate_targets2: 
-        return (t1, t2)
-    target1 = random.choice(candidate_targets1)
-    target2 = random.choice(candidate_targets2)
-
-    target_attr_key1 = random.choice(list(target1.attrs.keys()))
-    target_attr_key2 = random.choice(list(target2.attrs.keys()))
-    
-    target1.attrs[target_attr_key1], target2.attrs[target_attr_key2] = target2.attrs[target_attr_key2], target1.attrs[target_attr_key1]
-
-    return (t1, t2)
-
-def swap_subtree(t1, t2):
-    elem_list1 = get_elem_list(t1)
-    elem_list2 = get_elem_list(t2)
-    # avoid root swap
-    target1 = random.choice([c for c in elem_list1 if c.parent is not None])
-    target2 = random.choice([c for c in elem_list2 if c.parent is not None])
-
-    target1.replace_with(copy.copy(target2))
-    target2.replace_with(target1)
-
-    return (t1, t2)
-    
-def swap_attr(t1, t2):
-    elem_list1 = get_elem_list(t1)
-    elem_list2 = get_elem_list(t2)
-
-    candidate_targets1 = [c for c in elem_list1 if c.attrs]
-    candidate_targets2 = [c for c in elem_list2 if c.attrs]
-    if not candidate_targets1 or not candidate_targets2: 
-        return (t1, t2)
-    target1 = random.choice(candidate_targets1)
-    target2 = random.choice(candidate_targets2)
-
-    target1.attrs, target2.attrs = target2.attrs, target1.attrs
-
-    return (t1, t2)
-
-def crossover(t1, t2):
-    operators = [
-        swap_random_elem,  swap_random_attr,
-        swap_subtree,      swap_attr
-    ]
-    return random.choice(operators)(t1, t2)
 
 if __name__=="__main__":
     test1 = """<html><head><title>The Dormouse's story</title></head>
@@ -250,19 +169,3 @@ if __name__=="__main__":
     print(delete_random_attr(copy.copy(test2_soup)))
     print(add_random_attr(copy.copy(test2_soup)))
     print(replace_random_attr(copy.copy(test2_soup)))
-
-    t1, t2 = swap_random_elem(copy.copy(test1_soup),copy.copy(test2_soup))
-    print(t1)
-    print(t2)
-
-    t1, t2 = swap_random_attr(copy.copy(test1_soup),copy.copy(test2_soup))
-    print(t1)
-    print(t2)
-    
-    t1, t2 = swap_subtree(copy.copy(test1_soup),copy.copy(test2_soup))
-    print(t1)
-    print(t2)
-
-    t1, t2 = swap_attr(copy.copy(test1_soup),copy.copy(test2_soup))
-    print(t1)
-    print(t2)
