@@ -3,9 +3,10 @@
 import bs4
 import random
 from .html_constants import TAGS, ATTRS
+from .html_utils import rand_str
 
 
-def generate_html_tree(height, width, attr_cnt, soup=None):
+def generate_html_tree(height, width, attr_cnt, str_minlen, str_maxlen, soup=None):
     if soup is None:
         soup = bs4.BeautifulSoup('<html></html>', "lxml", multi_valued_attributes=None)
         root = soup.html
@@ -13,13 +14,13 @@ def generate_html_tree(height, width, attr_cnt, soup=None):
     else:
         # TODO : attribute values
         # TODO : include strings, not only tags
-        root_attr = {k: '' for k in random.sample(ATTRS, random.randint(0, attr_cnt))}
+        root_attr = {k: rand_str(str_minlen, str_maxlen) for k in random.sample(ATTRS, random.randint(0, attr_cnt))}
         root = soup.new_tag(random.choice(TAGS), attrs=root_attr)
         width_min = 0
     
     if height > 0:
         for _ in range(random.randint(width_min, width)):
-            elem = generate_html_tree(height - 1, width, attr_cnt, soup)
+            elem = generate_html_tree(height - 1, width, attr_cnt, str_minlen, str_maxlen, soup)
             root.insert(len(root.contents), elem)
 
     return root

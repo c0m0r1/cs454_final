@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import bs4
+import random
+import string
 
 
 # TODO : use .descendants generator?
@@ -13,3 +15,6 @@ def get_elem_list(t):
             res_li += get_elem_list(child)
     
     return [t] + res_li
+
+def rand_str(minlen, maxlen):
+    return random.choices(string.printable, k=random.randint(minlen, maxlen))
