@@ -49,6 +49,6 @@ if __name__ == "__main__":
     st = time.time()
     total, covered, cov_li = get_coverage_info('<div></div>')
     elapsed = time.time() - st
-    print("{:f}% covered".format(covered * 100/total))
+    print("{:f}%% covered".format(covered * 100/total))
     print(cov_li)
     print("elapsed time : {} sec".format(elapsed))
