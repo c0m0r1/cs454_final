@@ -6,9 +6,8 @@ from .html_constants import TAGS, ATTRS
 from .html_utils import rand_str
 
 
-def generate_html_tree(height, width, attr_cnt, str_minlen, str_maxlen, soup=None):
-    if soup is None:
-        soup = bs4.BeautifulSoup('<html></html>', "lxml", multi_valued_attributes=None)
+def generate_html_tree_internal(height, width, attr_cnt, str_minlen, str_maxlen, soup, init = True):
+    if init:
         root = soup.html
         width_min = 1  # force nonempty tree at root
     else:
@@ -22,7 +21,12 @@ def generate_html_tree(height, width, attr_cnt, str_minlen, str_maxlen, soup=Non
     
     if height > 0:
         for _ in range(random.randint(width_min, width)):
-            elem = generate_html_tree(height - 1, width, attr_cnt, str_minlen, str_maxlen, soup)
+            elem = generate_html_tree_internal(height - 1, width, attr_cnt, str_minlen, str_maxlen, soup, False)
             root.insert(len(root.contents), elem)
 
     return root
+
+def generate_html_tree(height, width, attr_cnt, str_minlen, str_maxlen):
+    soup = bs4.BeautifulSoup('<html></html>', "lxml", multi_valued_attributes=None)
+    generate_html_tree_internal(height, width, attr_cnt, str_minlen, str_maxlen, soup)
+    return soup

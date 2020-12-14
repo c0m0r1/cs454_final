@@ -10,8 +10,13 @@ def swap_random_elem(t1, t2):
     elem_list1 = get_elem_list(t1)
     elem_list2 = get_elem_list(t2)
     # avoid root swap
-    target1 = random.choice([c for c in elem_list1 if c.parent is not None])
-    target2 = random.choice([c for c in elem_list2 if c.parent is not None])
+    candidate_targets1 = [c for c in elem_list1 if c.parent is not None]
+    candidate_targets2 = [c for c in elem_list2 if c.parent is not None]
+    if not candidate_targets1 or not candidate_targets2: 
+        return (t1, t2)
+
+    target1 = random.choice(candidate_targets1)
+    target2 = random.choice(candidate_targets2)
 
     target1.name, target2.name = target2.name, target1.name
     target1.attrs, target2.attrs = target2.attrs, target1.attrs

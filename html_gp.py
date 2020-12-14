@@ -12,7 +12,7 @@ import copy
 def selection(population, population_fitness):
     s = 1.5
 
-    population_fitness, population = zip(*sorted(zip(population_fitness, population)))
+    population_fitness, population = zip(*sorted(zip(population_fitness, population), key=lambda x: x[0]))
 
     population_len = len(population)
     sum_rank = int(population_len * (population_len - 1) / 2)
@@ -50,8 +50,8 @@ def html_gp(iter_cnt, population_size, mutation_rate, crossover_rate):
 
     generation_cnt = 0
     while iter_cnt >= population_size:
-        print("[*] generation %d"%(generation_cnt))
-        
+        print("[*] generation %d : max fitness %f"%(generation_cnt,max(population_fitness)))
+    
         new_population = random.choices(population, k=int((1 - crossover_rate) * population_size))
         for _ in range(int(crossover_rate * population_size / 2)):
             t1, t2 = selection(population, population_fitness)
@@ -69,6 +69,7 @@ def html_gp(iter_cnt, population_size, mutation_rate, crossover_rate):
         iter_cnt -= population_size
 
         generation_cnt += 1
+        
     
     population_fitness, population = zip(*sorted(zip(population_fitness, population)))
 
