@@ -11,7 +11,7 @@ def primitive_random(iter_cnt):
     result = None
     for _ in range(iter_cnt):
         length = random.randint(length_range[0], length_range[1])
-        tmp_result = ''.join(random.choice(string.printable) for _ in range(length))
+        tmp_result = ''.join(random.choices(string.printable, k=length))
         new_f = fitness(tmp_result)
         if new_f > max_f:
             max_f = new_f
